@@ -1,0 +1,28 @@
+name: tododo
+description: todo apps
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^5.0.0 # Untuk font kustom seperti Urbanist atau Manrope.
+  provider: ^6.1.2 # Untuk manajemen state sederhana.
+  supabase_flutter: ^2.8.3
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  flutter_localizations: # Jika membutuhkan dukungan multi-bahasa.
+    sdk: flutter
+  table_calendar: ^3.1.3
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_lints: 4.0.0
+  lints: 4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
