@@ -2,42 +2,41 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/task_models.dart';
 
 class TaskService {
-  final SupabaseClient _supabase;
-  static const String _tableName = 'tasks';
+  final _supabase = Supabase.instance.client;
 
-  TaskService(this._supabase);
+  Future<List<Task>> fetchTasks(String userId) async {
+    final response = await _supabase
+        .from('tasks')
+        .select()
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
 
-  Future<Task> createTask(Task task) async {
-    try {
-      final response = await _supabase
-          .from(_tableName)
-          .insert(task.toJson())
-          .select()
-          .single();
-      return Task.fromJson(response);
-    } catch (e) {
-      throw Exception('Failed to create task: \$e');
+    if (response == null || response is List == false) {
+      throw Exception('Error fetching tasks.');
+    }
+
+    return (response as List).map((task) => Task.fromJson(task)).toList();
+  }
+
+  Future<void> createTask(Task task) async {
+    final response = await _supabase.from('tasks').insert(task.toJson());
+    if (response == null) {
+      throw Exception('Error creating task.');
     }
   }
 
-  Future<List<Task>> getTasksByUser(String userId) async {
-    try {
-      final response = await _supabase
-          .from(_tableName)
-          .select()
-          .eq('user_id', userId)
-          .order('created_at', ascending: false);
-      return response.map((json) => Task.fromJson(json)).toList();
-    } catch (e) {
-      throw Exception('Failed to get tasks: \$e');
+  Future<void> updateTask(Task task) async {
+    final response =
+        await _supabase.from('tasks').update(task.toJson()).eq('id', task.id);
+    if (response == null) {
+      throw Exception('Error updating task.');
     }
   }
 
   Future<void> deleteTask(String taskId) async {
-    try {
-      await _supabase.from(_tableName).delete().eq('id', taskId);
-    } catch (e) {
-      throw Exception('Failed to delete task: \$e');
+    final response = await _supabase.from('tasks').delete().eq('id', taskId);
+    if (response == null) {
+      throw Exception('Error deleting task.');
     }
   }
 }
